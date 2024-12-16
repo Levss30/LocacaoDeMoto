@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MottuDesafio.Models;
+using LocacaoDeMoto.Models;
 
-namespace MottuDesafio.Data
+namespace LocacaoDeMoto.Data
 {
     public class DataContext : DbContext
     {

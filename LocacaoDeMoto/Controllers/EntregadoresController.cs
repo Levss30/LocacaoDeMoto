@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MottuDesafio.Data;
-using MottuDesafio.Models;
+using LocacaoDeMoto.Data;
+using LocacaoDeMoto.Models;
 using System.Linq;
-using static MottuDesafio.Models.Entregador;
+using static LocacaoDeMoto.Models.Entregador;
 
-namespace MottuDesafio.Controllers
+namespace LocacaoDeMoto.Controllers
 {
     [Authorize]
     [ApiController]
@@ -20,12 +20,6 @@ namespace MottuDesafio.Controllers
         {
             _context = context;
             _configuration = configuration;
-        }
-        [AllowAnonymous]
-        [HttpGet]
-        public async Task<List<Entregador>> GetEnt()
-        {
-            return await _context.Entregador.ToListAsync();
         }
 
         private async Task<bool> EntregadorExistente(string cnpj)

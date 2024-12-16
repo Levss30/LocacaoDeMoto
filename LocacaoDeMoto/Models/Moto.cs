@@ -1,4 +1,4 @@
-﻿namespace MottuDesafio.Models
+﻿namespace LocacaoDeMoto.Models
 {
     public class Moto
     {

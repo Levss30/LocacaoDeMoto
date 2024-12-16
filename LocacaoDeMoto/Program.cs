@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
-using MottuDesafio.Data;
+using LocacaoDeMoto.Data;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);

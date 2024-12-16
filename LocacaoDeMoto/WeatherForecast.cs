@@ -1,4 +1,4 @@
-namespace MottuDesafio
+namespace LocacaoDeMoto
 {
     public class WeatherForecast
     {

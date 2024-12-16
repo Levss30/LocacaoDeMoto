@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MottuDesafio.Data;
-using MottuDesafio.Models;
-using static MottuDesafio.Models.Locacao;
+using LocacaoDeMoto.Data;
+using LocacaoDeMoto.Models;
+using static LocacaoDeMoto.Models.Locacao;
 
-namespace MottuDesafio.Controllers
+namespace LocacaoDeMoto.Controllers
 {
     [Authorize]
     [ApiController]
