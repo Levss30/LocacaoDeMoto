@@ -17,6 +17,6 @@ namespace MottuDesafio.Data
 
         public DbSet<Entregador> Entregador { get; set; }
         public DbSet<Moto> Motos { get; set; }
-        public DbSet<Locacao> Locacaos { get; set; }
+        public DbSet<Locacao> Locacoes { get; set; }
     }
 }

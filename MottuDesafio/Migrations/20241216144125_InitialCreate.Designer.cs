@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MottuDesafio.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20241212225629_SecondMigration")]
-    partial class SecondMigration
+    [Migration("20241216144125_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,42 +70,40 @@ namespace MottuDesafio.Migrations
                     NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("DataDevolucao")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasAnnotation("Relational:JsonPropertyName", "data_devolucao");
 
                     b.Property<DateTime>("DataInicio")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasAnnotation("Relational:JsonPropertyName", "data_inicio");
 
                     b.Property<DateTime>("DataPrevisaoTermino")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasAnnotation("Relational:JsonPropertyName", "data_previsao_termino");
 
                     b.Property<DateTime>("DataTermino")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasAnnotation("Relational:JsonPropertyName", "data_termino");
 
                     b.Property<int>("EntregadorId")
-                        .HasColumnType("integer");
-
-                    b.Property<long>("EntregadorId1")
-                        .HasColumnType("bigint");
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "entregador_id");
 
                     b.Property<int>("MotoId")
-                        .HasColumnType("integer");
-
-                    b.Property<long>("MotoId1")
-                        .HasColumnType("bigint");
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "moto_id");
 
                     b.Property<int>("Plano")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "plano");
 
                     b.Property<int>("ValorDiaria")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "valor_diaria");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EntregadorId1");
-
-                    b.HasIndex("MotoId1");
-
-                    b.ToTable("Locacaos");
+                    b.ToTable("Locacoes");
                 });
 
             modelBuilder.Entity("MottuDesafio.Models.Moto", b =>
@@ -116,8 +114,9 @@ namespace MottuDesafio.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<long>("Id"));
 
-                    b.Property<int>("Ano")
-                        .HasColumnType("integer");
+                    b.Property<string>("Ano")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Modelo")
                         .IsRequired()
@@ -130,25 +129,6 @@ namespace MottuDesafio.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Motos");
-                });
-
-            modelBuilder.Entity("MottuDesafio.Models.Locacao", b =>
-                {
-                    b.HasOne("MottuDesafio.Models.Entregador", "Entregador")
-                        .WithMany()
-                        .HasForeignKey("EntregadorId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MottuDesafio.Models.Moto", "Moto")
-                        .WithMany()
-                        .HasForeignKey("MotoId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Entregador");
-
-                    b.Navigation("Moto");
                 });
 #pragma warning restore 612, 618
         }

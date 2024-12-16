@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MottuDesafio.Data;
 using MottuDesafio.Models;
+using static MottuDesafio.Models.Moto;
 
 namespace MottuDesafio.Controllers
 {
@@ -56,19 +57,30 @@ namespace MottuDesafio.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPut("{id}/{placa}")]
-        public async Task<IActionResult> UpdateMoto(Moto updateMoto)
+        [HttpPut("{id}/placa")]
+        public async Task<IActionResult> UpdateMoto(long id, [FromBody] MotoPlacaUpdate updateMoto)
         {
             try
             {
-                _context.Motos.Update(updateMoto);
-                int linhasAfetadas = await _context.SaveChangesAsync();
+                var motoExistente = await _context.Motos.FindAsync(id);
 
-                return Ok(linhasAfetadas);
+                if (motoExistente == null)
+                {
+                    return NotFound(new { mensagem = "Moto não encontrada" });
+                }
+
+                // Atualiza apenas a propriedade 'Placa'
+                motoExistente.Placa = updateMoto.Placa;
+
+                // Informa ao EF que a entidade foi modificada
+                _context.Motos.Update(motoExistente);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { mensagem = "Placa atualizada com sucesso" });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { mensagem = "Dados inválidos", erro = ex.Message });
             }
         }
 
@@ -88,13 +100,13 @@ namespace MottuDesafio.Controllers
                 Moto mRemover = await _context.Motos
                     .FirstOrDefaultAsync(m => m.Id == id);
                 _context.Motos.Remove(mRemover);
-                int linhasAfetadas = await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
-                return Ok(linhasAfetadas);
+                return Ok( new { mensagem = "Moto deletada com sucesso!", id});
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest("Dados invalidos!");
             }
         }
 

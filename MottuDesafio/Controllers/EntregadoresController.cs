@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using MottuDesafio.Data;
 using MottuDesafio.Models;
 using System.Linq;
+using static MottuDesafio.Models.Entregador;
 
 namespace MottuDesafio.Controllers
 {
@@ -14,17 +15,17 @@ namespace MottuDesafio.Controllers
     {
         private readonly DataContext _context;
         private IConfiguration _configuration;
-        private readonly string _uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "UploadedImages");
+
         public EntregadoresController(DataContext context, IConfiguration configuration)
         {
             _context = context;
             _configuration = configuration;
-
-            // Criação do diretório de upload se não existir
-            if (!Directory.Exists(_uploadFolder))
-            {
-                Directory.CreateDirectory(_uploadFolder);
-            }
+        }
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<List<Entregador>> GetEnt()
+        {
+            return await _context.Entregador.ToListAsync();
         }
 
         private async Task<bool> EntregadorExistente(string cnpj)
@@ -54,6 +55,31 @@ namespace MottuDesafio.Controllers
             catch (System.Exception ex)
             {
                 return BadRequest(ex.InnerException);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost("{id}/cnh")]
+        public async Task<IActionResult> EnviarCnh(long id, [FromBody] AtualizarCnhRequest request)
+        {
+            try
+            {
+                var entregador = await _context.Entregador.FindAsync(id);
+                if (entregador == null)
+                {
+                    return NotFound(new { mensagem = "Entregador não encontrado" });
+                }
+
+                entregador.FotoCnh = request.FotoCnh;
+
+                _context.Entregador.Update(entregador);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { mensagem = "Imagem da CNH enviada com sucesso" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensagem = "Erro ao processar a solicitação", erro = ex.Message });
             }
         }
 

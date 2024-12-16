@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MottuDesafio.Data;
 using MottuDesafio.Models;
+using static MottuDesafio.Models.Locacao;
 
 namespace MottuDesafio.Controllers
 {
@@ -24,45 +25,58 @@ namespace MottuDesafio.Controllers
         [HttpGet("{id}")]
         public async Task<Locacao> GetById(int id)
         {
-            return await _context.Locacaos.FirstOrDefaultAsync(l => l.Id == id);
+            return await _context.Locacoes.FirstOrDefaultAsync(l => l.Id == id);
         }
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult> AlugarMoto(Locacao loc)
+        public async Task<IActionResult> PostLocacao(Locacao l)
         {
+            if (l == null)
+                return BadRequest(new { mensagem = "Dados inválidos" });
+
             try
             {
-                loc.EntregadorId = loc.EntregadorId;
-                loc.MotoId = loc.MotoId;
-                loc.DataInicio = DateTime.Now;
-                loc.DataTermino = DateTime.Now;
-                loc.DataPrevisaoTermino = DateTime.Now;
-                loc.Plano = loc.Plano;
-                await _context.Locacaos.AddAsync(loc);
+                l.Id = l.Id; 
+                l.EntregadorId = l.EntregadorId;
+                l.MotoId = l.MotoId;
+                l.ValorDiaria = l.ValorDiaria;
+                l.Plano = l.Plano;
+;               _context.Locacoes.Add(l);
                 await _context.SaveChangesAsync();
-                return Ok("Parabens!! sua moto foi alugada!!");
+
+                return Ok(l);
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-                return BadRequest("Dados inválidos");
+                return StatusCode(500, new { mensagem = "Erro interno no servidor", erro = ex.Message, ex.InnerException });
             }
         }
 
+
         [AllowAnonymous]
         [HttpPut("{id}/devolucao")]
-        public async Task<IActionResult> Update(Locacao updateLocacao)
+        public async Task<IActionResult> Update(long id, [FromBody] LocacaoDevolucaoRequest request)
         {
             try
             {
-                _context.Locacaos.Update(updateLocacao);
+                var locacaoExistente = await _context.Locacoes.FindAsync(id);
+
+                if (locacaoExistente == null)
+                {
+                    return NotFound(new { mensagem = "Locação não encontrada" });
+                }
+
+                locacaoExistente.DataDevolucao = request.DataDevolucao;
+
+                _context.Locacoes.Update(locacaoExistente);
                 int linhasAfetadas = await _context.SaveChangesAsync();
 
-                return Ok( new { mensagem = "Data de devolução informada com sucesso",  linhasAfetadas });
+                return Ok(new { mensagem = "Data de devolução informada com sucesso"});
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest( new { mensagem = "Dados inválidos" });
+                return BadRequest(new { mensagem = "Dados inválidos", erro = ex.Message });
             }
         }
     }

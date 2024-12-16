@@ -12,5 +12,10 @@ namespace MottuDesafio.Models
         public string NumeroCnh { get; set; }
         public string TipoCnh { get; set; }
         public string FotoCnh { get; set; }
+
+        public class AtualizarCnhRequest
+        {
+            public string FotoCnh { get; set; }
+        }
     }
 }
